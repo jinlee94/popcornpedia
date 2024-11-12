@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+.buttonWrap{
+	width:100%;
+	margin:0px auto 10px;
+	text-align:center;
+}
+.resultText{
+	margin-left:30px;
+	color:grey;
+}
+.resultImg{
+	margin-top:10px;
+}
+.resultImg a{
+	color:darkslategrey;
+	text-decoration: none;
+}
+.resultImg img{
+	min-width:200px;
+	max-width:200px;
+	min-height:300px;
+	max-height:300px;
+	margin: 5px;
+}
+.noResultBox{
+	margin-top:240px;
+	min-height:700px;
+	vertical-align: center;
+	justify-content: center;
+}
+.noResult{
+	max-width:400px;	
+	margin : auto;
+	text-align:center;
+}
+.paging{
+	margin : 30px auto 100px;
+}

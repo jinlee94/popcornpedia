@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <mapper namespace="mapper.review">
+    	<resultMap id="revResult" type="ReviewDTO">
+    		<result property="reviewNO" column="reviewNO" />
+    		<result property="movie_id" column="movie_id" />
+    		<result property="content" column="content" />
+    		<result property="member_id" column="member_id" />
+    		<result property="nickname" column="nickname" />
+       		<result property="reviewdate" column="reviewdate" />
+        	<result property="likeNO" column="likeNO" />
+        	<result property="memberImgName" column="memberImgName"/>
+        	
+     	</resultMap>
+    <!-- 전체 리뷰 조회  -->
+   	<select id ="selectAllReview" parameterType="String" resultMap="revResult">
+   		<![CDATA[
+   			select review.*, popcornmember.memberImgName
+   			from review 
+   			left join popcornmember ON review.member_id = popcornmember.member_id
+   			where movie_id = #{movie_id} order by reviewdate desc
+   		]]>
+   		</select>
+   		
+   	<select id ="selectUserAllReview" parameterType="String" resultMap="revResult">
+   		<![CDATA[
+   			select review.*, popcornmember.memberImgName  
+   			from review 
+   			left join popcornmember ON review.member_id = popcornmember.member_id
+   			where review.member_id = #{member_id} order by reviewdate desc
+   		]]>
+   	
+   	</select>
+   		
+   	<!--  상세 리뷰 조회  -->	
+   	<select id="selectReview" parameterType="int" resultMap="revResult">
+   		<![CDATA[
+   			select * from review where reviewNO = #{reviewNO}
+   		]]>
+   	
+   	</select>
+   	
+   	<!-- 리뷰 작성  -->	
+   	<insert id="insertReview" parameterType="ReviewDTO">
+   		<![CDATA[
+   			insert into review (movie_id, member_id, nickname, content)
+            VALUES(#{movie_id}, #{member_id}, #{nickname}, #{content})
+   		]]>
+   	
+   	</insert>
+   
+	<!--  리뷰 삭제  -->
+   	<delete id="deleteReview" parameterType="java.util.Map">
+   		<![CDATA[
+   			delete from review where member_id = #{member_id} AND reviewNO = #{reviewNO}
+   		]]>
+   	
+   	</delete>
+   	
+   	<!-- 리뷰 수정 -->
+   	<update id="updateReview" parameterType="ReviewDTO">
+   		<![CDATA[
+   			update review set content=#{content}
+   			where reviewNO = #{reviewNO}
+   		
+   		]]>
+   	</update>
+   
+   
+   <!--  좋아요~  -->
+   	<insert id="addLikeReview" parameterType="java.util.Map">
+   		<![CDATA[
+   			insert into reviewlike (reviewNO, member_id) VALUES (#{reviewNO}, #{member_id})
+   		]]>
+   	</insert>
+   	
+   	<!-- 좋아요 취소 -->
+   	<delete id="cancelLikeReview" parameterType="java.util.Map">
+   		<![CDATA[
+   			delete from reviewlike where reviewNO = #{reviewNO} AND member_id = #{member_id}
+   		]]>
+   	</delete>
+   	
+   	<!--  좋아요 했는지 안했는지 체ㅡ -->
+   	<select id="likeCheck" parameterType="java.util.Map" resultType="int">
+   		<![CDATA[
+   			select count(*) from reviewlike where reviewNO =#{reviewNO} AND member_id = #{member_id}
+   		]]>
+   	</select>
+   	
+   	<!-- 좋아요 수 업데이트 쿼리 -->
+   	<!-- 
+   	<update id="updateLike" parameterType="java.util.Map">
+   		<![CDATA[
+   			update review set likeNO = (select count(*) from reviewlike where reviewNO = #{reviewNO} ) where reviewNO = #{reviewNO}
+   		]]>
+   	</update>
+   	 -->
+   	 
+   	 <!-- 게시글 좋아요 수 더하기  -->
+   	 <update id="plusLikeReview" parameterType="java.util.Map">
+   	 	<![CDATA[
+   	 		update review set likeNO = likeNO + 1 where reviewNO = #{reviewNO} 
+   	 	]]>
+   	 </update>
+   	 
+   	 <update id="minusLikeReview" parameterType="java.util.Map">
+   	 	<![CDATA[
+   	 		update review set likeNO = likeNO - 1 where reviewNO = #{reviewNO}
+   	 	]]>
+   	 
+   	 </update>
+   	 
+   	 <select id="checkReview" parameterType="java.util.Map" resultMap="revResult" >
+   	 	<![CDATA[
+   	 		select * from review where movie_id = #{movie_id} AND member_id = #{member_id} 
+   	 	]]>
+   	 
+   	 </select>
+   	 
+   	 <select id="countReviewsByMember_id" parameterType="String" resultType="int" >
+   	 	<![CDATA[
+   	 		select count(*) from review where member_id = #{member_id}
+   	 	]]>
+   	 </select>
+   	 
+   	 <select id="countReviewsByMovie_id" parameterType="String" resultType="int">
+   	 	<![CDATA[
+   	 		select count(*) from review where movie_id = #{movie_id}
+   	 	]]>
+   	 </select>
+   
+   </mapper>

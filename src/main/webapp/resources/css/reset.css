@@ -1,0 +1,79 @@
+/* reset */
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, del, dfn, em, img, b, u, i, dl, dt, dd, ol, ul, li, fieldset, form, input, textarea, label, button, legend, table, caption, tbody, tfoot, thead, tr, th, td, section, main, nav, article, figcaption, footer, header {
+  margin:0;
+  padding:0;
+  border:0;
+  box-sizing:border-box;
+  font-family: Pretendard, sans-serif;
+}
+a {text-decoration:none;}
+ul {list-style:none;}
+table {border-collapse:collapse;}
+
+/* bootstrap custom */
+:root,[data-bs-theme=light]{
+	--bs-primary:#6f34f8;
+	--bs-secondary:#a4a8ab;
+	--bs-primary-rgb:111,52,248;
+	--bs-secondary-rgb:164,168,171;
+	--bs-primary-text-emphasis:#320565;
+	--bs-primary-border-subtle:#9ec5fe;
+	--bs-secondary-border-subtle:#cfd1d1;
+	--bs-body-color:#1c1e20;
+	--bs-body-color-rgb:28,30,32;
+	--bs-link-color:#6f34f8;
+	--bs-link-color-rgb:111,52,248;
+	--bs-link-hover-color:#5326be;
+	--bs-link-hover-color-rgb:83,38,190;
+	--bs-focus-ring-opacity:0.25;
+	--bs-focus-ring-color:rgba(83, 38, 190, 0.25);
+}
+.form-control:focus, .form-select:focus, .form-check-input:focus{
+	border-color:#6f34f8;
+  box-shadow:none;
+}
+.form-check-input:checked{
+  background-color:#6f34f8;
+  border-color:#6f34f8
+}
+.btn-primary{
+  --bs-btn-bg:#6f34f8;
+  --bs-btn-border-color:#6f34f8;
+  --bs-btn-hover-bg:#5326be;
+  --bs-btn-hover-border-color:#5326be;
+  --bs-btn-focus-shadow-rgb:167,129,255;
+  --bs-btn-active-bg:#5326be;
+  --bs-btn-active-border-color:#5326be;
+  --bs-btn-disabled-bg:#6f34f8;
+  --bs-btn-disabled-border-color:#6f34f8
+}
+.btn-outline-primary{
+  --bs-btn-color:#6f34f8;
+  --bs-btn-border-color:#6f34f8;
+  --bs-btn-hover-bg:#6f34f8;
+  --bs-btn-hover-border-color:#6f34f8;
+  --bs-btn-focus-shadow-rgb:167,129,255;
+  --bs-btn-active-bg:#6f34f8;
+  --bs-btn-active-border-color:#6f34f8;
+  --bs-btn-disabled-color:#6f34f8;
+  --bs-btn-disabled-border-color:#6f34f8
+}
+.dropdown-menu{
+  --bs-dropdown-link-active-color:var(--bs-body-color);
+  --bs-dropdown-link-active-bg:var(--bs-tertiary-bg)
+}
+.nav-pills{
+  --bs-nav-pills-link-active-bg:#6f34f8
+}
+.pagination{
+  --bs-pagination-focus-box-shadow:0 0 0 0.25rem rgba(167,129,255,0.25);
+  --bs-pagination-active-bg:#6f34f8;
+  --bs-pagination-active-border-color:#6f34f8
+}
+.list-group{
+  --bs-list-group-active-bg:#6f34f8;
+  --bs-list-group-active-border-color:#6f34f8
+}
+.modal-content {
+	border:none;
+}

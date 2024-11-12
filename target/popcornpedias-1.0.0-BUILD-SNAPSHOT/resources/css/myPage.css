@@ -1,0 +1,73 @@
+@charset "UTF-8";
+
+
+
+
+#profilesection {
+
+	background-color : #f0e9ff;
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+#profilesection img {
+	border-radius: 50%;
+}
+
+#nicknameText {
+	font-size: 24px;
+	font-weight: bold;
+	margin: 10px 0;
+}
+
+
+#myReview{
+	cursor: pointer;
+}
+
+#myStarRating{
+	cursor: pointer;
+}
+
+#myArticle{
+	cursor: pointer;
+}
+#myWishMovie{
+	cursor: pointer;
+}
+
+.set-width{
+	margin : 0 auto;
+	width : 800px !important;
+}
+
+.btn.mybtn {
+	font-size : 39px;
+	background-color: transparent; 
+    box-shadow: none;
+}
+
+.btn:active{
+	 box-shadow: none; 
+    border: none;
+}
+
+.btn:focus{
+	 outline: none; /* 포커스 효과 제거 */
+    box-shadow: none; 
+    border: none;
+}
+
+.vh-75{
+	min-height : 75vh;
+}
+/*#deleteMember {
+	color: #f00;
+	font-weight: bold;
+
+}*/
+
+

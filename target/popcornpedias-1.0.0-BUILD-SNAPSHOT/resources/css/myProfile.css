@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+#profilesection {
+
+	background-color : #f0e9ff;
+	border-radius: 5px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+#profilesection img {
+	border-radius: 50%;
+}
+
+#nicknameText {
+	font-size: 24px;
+	font-weight: bold;
+	margin: 10px 0;
+}
+
+
+#myReview{
+	cursor: pointer;
+}
+
+#myStarRating{
+	cursor: pointer;
+}
+
+#myArticle{
+	cursor: pointer;
+}
+
+.set-width{
+	margin : 0 auto;
+	width : 800px !important;
+}
+.input-group button{
+	min-width:8em;
+}
+#modMyInfo {
+	padding-top:5rem;
+	padding-bottom:5rem;
+	min-height:70vh;
+}
+#modMyInfo .form-text a {cursor:pointer;}
+#modMyInfo .modal-dialog-centered {
+    min-height: calc(100% - var(--bs-modal-margin) * 6);
+}
+#modMyInfo .modal-content {
+	border:none;
+}
+#modMyInfo .modal-content .input-group button{
+	min-width:6em;
+}

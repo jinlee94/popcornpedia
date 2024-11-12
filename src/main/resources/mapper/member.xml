@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+	<resultMap id="memResult" type="memberDTO">
+		<result property="member_id" column="member_id" />
+        <result property="pwd" column="pwd" />
+        <result property="email" column="email" />
+        <result property="nickname" column="nickname" />
+        <result property="joinDate" column="joinDate" />
+        <result property="gender" column="gender" />
+        <result property="memberImgName" column="memberImgName" />
+        <result property="email_verified" column="email_verified" />
+	</resultMap> 
+	
+	<!-- 전체 회원 가져오기 -->
+	<select id="selectAllMemberList" resultMap="memResult">
+      <![CDATA[
+         select * 
+         from popcornmember 
+         order by joinDate desc	 	
+      ]]>
+	</select>
+	
+	<!-- 회원 가입하기 -->
+	<insert id="insertMember" parameterType="memberDTO">
+		<![CDATA[insert into popcornmember(member_id, pwd, email, nickname, gender) values(#{member_id}, #{pwd}, #{email}, #{nickname}, #{gender})]]>
+	</insert>
+	
+	<!-- 입력한 아이디가 존재하는지 확인 (0 또는 1 반환) -->
+	<select id="checkDuplicateId" resultType="int">
+		<![CDATA[select count(*) from popcornmember where member_id = #{member_id}]]>
+	</select>
+	
+	<!-- 입력한 이메일이 존재하는지 확인 -->
+	<select id="checkDuplicateEmail" resultType="int">
+		<![CDATA[select count(*) from popcornmember where email = #{email}]]>
+	</select>
+	
+	<!-- 입력한 닉네임이 존재하는지 확인 -->
+	<select id="checkDuplicateNickname" resultType="int">
+		<![CDATA[select count(*) from popcornmember where nickname = #{nickname}]]>
+	</select>
+	
+	<!-- 회원 업데이트하기 (별명,이메일) -->
+	<update id="updateMember" parameterType="memberDTO">
+	  	update popcornmember 
+	  	set nickname=#{nickname}, email=#{email} 
+	  	where member_id=#{member_id}
+	</update>
+	
+	<!-- 멤버 검색 시작 -->
+	<select id="selectSearchMember" resultMap="memResult" parameterType="memberDTO">
+	    select * 
+	    from popcornmember 
+	    where 
+	    <choose>
+	        <when test="searchType!=null and searchType.equals('mid')">
+	            member_id like concat('%', #{keyword}, '%')
+	        </when>
+	        <when test="searchType!=null and searchType.equals('nick')">
+	            nickname like concat('%', #{keyword}, '%')
+	        </when>
+	        <when test="searchType!=null and searchType.equals('em')">
+	            email like concat('%', #{keyword}, '%')
+	        </when>
+	        <otherwise>
+	            1=0 <!-- null이면 반환 x -->
+	        </otherwise>
+	    </choose>
+	    order by joinDate desc
+	</select>
+	<!-- 멤버 검색 끝 -->
+	
+	<!-- 아이디로 멤버 찾기 -->
+	<select id="selectOneMember" resultType="memberDTO" parameterType="String">
+      <![CDATA[
+         select * 
+         from popcornmember 
+         where member_id=#{member_id}
+      ]]>
+	</select>
+    
+	<!-- 멤버 삭제 -->
+	<delete id="deleteMember" parameterType="String">
+		<![CDATA[
+		   delete from popcornmember
+		   where member_id=#{member_id}
+		]]>      
+	</delete>
+	
+	<!-- 아이디, 비밀번호로 select 후 일치하는 회원 DTO 반환 -->
+	<select id="selectMemberByIdAndPwd" resultType="memberDTO" parameterType="java.util.HashMap">
+		<![CDATA[select * from popcornmember where member_id = #{member_id} and pwd = #{pwd}]]>
+	</select>
+
+	<!-- 아이디로 이메일 찾기 -->
+	<select id="getEmailById" resultType="String" parameterType="String">
+		<![CDATA[select email from popcornmember where member_id = #{member_id}]]>
+	</select>
+	
+	<!-- 이메일 인증 완료시키기 -->
+	<update id="setEmailVerified" parameterType="String">
+	  	update popcornmember 
+	  	set email_verified = 1 
+	  	where member_id = #{member_id}
+	</update>
+	
+	<!-- 이메일 인증 해제시키기 -->
+	<update id="setEmailNotVerified" parameterType="String">
+	  	update popcornmember 
+	  	set email_verified = 0 
+	  	where member_id = #{member_id}
+	</update>
+	
+	<!-- 총 멤버 수  -->
+	<select id="countMember" resultType="int">
+		<![CDATA[select count(member_id) from popcornmember]]>
+	</select>
+	<!-- 한 페이지만큼만 가져오기 -->
+	<select id="selectPageMember" parameterType="hashMap" resultMap="memResult">
+		<![CDATA[
+		select * from popcornmember
+		order by joinDate desc limit #{displayPost}, #{postNum}]]>
+	</select>
+	
+	<!-- 이메일로 아이디 찾기 -->
+	<select id="getIdByEmail" resultType="String" parameterType="String">
+		<![CDATA[select member_id from popcornmember where email = #{email}]]>
+	</select>
+	
+	<!-- 해당 아이디와 이메일을 가진 회원이 존재하는지 확인 -->
+	<select id="isMemberExistByIdAndEmail" resultType="int" parameterType="java.util.HashMap">
+		<![CDATA[select count(*) from popcornmember where member_id = #{member_id} and email = #{email}]]>
+	</select>
+	
+	<!-- 해당 아이디를 가진 회원의 비밀번호 업데이트 -->
+	<update id="resetPwdById" parameterType="memberDTO">
+		<![CDATA[update popcornmember set pwd = #{pwd} where member_id = #{member_id}]]>
+	</update>
+</mapper>

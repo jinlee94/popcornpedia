@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+ <mapper namespace="mapper.board">
+	<resultMap id="boardResult" type="boardDTO">
+		<result property="articleNO" column="articleNO"/>
+		<result property="title" column="title"/>
+		<result property="writeDate" column="writeDate"/>
+		<result property="nickname" column="nickname"/>
+		<result property="member_id" column="member_id"/>
+		<result property="hit" column="hit"/>
+		<result property="content" column="content"/>
+		<result property="imgFileName" column="imgFileName"/>
+		<result property="likeNO" column="likeNO"/>
+	</resultMap>
+	
+	<resultMap id="commentResult" type="commentDTO">
+		<result property="commentNO" column="commentNO"/>
+		<result property="articleNO" column="articleNO"/>
+		<result property="member_id" column="member_id"/>
+		<result property="cmtContent" column="cmtContent"/>
+		<result property="cmtWriteDate" column="cmtWriteDate"/>
+		<result property="nickname" column="nickname"/>
+	</resultMap>
+	
+	<!-- 공통으로 사용할 SQL문을 미리 생성해 놓고 <include refid="id"/> 로 사용 가능 -->
+	<sql id="select">
+		<![CDATA[select * from board]]>
+	</sql>
+	
+	<!-- 작성일 최근 순으로 전체 게시글 리스트 가져오기 -->
+	<select id="selectAllArticle" resultMap="boardResult">
+		<![CDATA[select * from board order by writeDate desc]]>
+	</select>
+	
+	<!-- 게시글 번호로 게시글 하나 찾기 -->
+	<select id="searchArticleByArticleNO" resultType="boardDTO" parameterType="int">
+		<![CDATA[select board.*, popcornmember.memberImgName
+		from board
+		left join popcornmember ON board.member_id = popcornmember.member_id
+		where board.articleNO=#{articleNO}]]>
+	</select>
+	
+	<!-- 아이디로 게시글 리스트 가져오기 -->
+	<select id="selectArticleByMember_id" resultMap="boardResult" parameterType="java.util.Map">
+			<![CDATA[select board.*, popcornmember.memberImgName
+					from board
+					left join popcornmember ON board.member_id = popcornmember.member_id
+					where board.member_id = #{member_id}
+					order by board.writeDate desc
+					limit #{displayPost}, #{postNum}]]>
+	</select>
+	
+	<!-- 게시글 번호로 작성자 아이디 찾기 -->
+	<select id="selectMember_idByArticleNO" resultType="String" parameterType="int">
+		<![CDATA[select member_id from board where articleNO=#{articleNO}]]>
+	</select>
+	
+	
+	<!-- 게시글 작성하기 -->
+	<!-- parameterType : SQL 실행할 때 사용할 매개변수 타입을 DTO로 지정 -->
+	<!-- #{}에 들어갈 값은 DTO의 속성 이름으로 지정 -->
+	<!-- useGeneratedKeys : sql실행 후 특정 키값을 가져오기 (새로 작성된 글번호를 가져와 DTO에 담음) -->
+	<insert id="insertArticle" parameterType="boardDTO"
+	useGeneratedKeys="true" keyProperty="articleNO" keyColumn="articleNO">
+		<![CDATA[insert into board(title, content, imgFileName, nickname, member_id)
+		values(#{title}, #{content}, #{imgFileName}, #{nickname}, #{member_id})]]>
+	</insert>
+	
+	<!-- 게시글 수정하기 -->
+	<update id="updateArticle" parameterType="boardDTO">
+    	<![CDATA[update board set title = #{title}, content = #{content}]]>
+    	<if test="imgFileName != '' and imgFileName != null">
+    		, imgFileName = #{imgFileName}
+    	</if>
+    	where articleNO = #{articleNO}
+	</update>
+	
+	<!-- 게시글 삭제하기 -->
+	<delete id="deleteArticle" parameterType="int">
+		<![CDATA[delete from board where articleNO = #{articleNO}]]>
+	</delete>
+	
+	<!-- 게시글 첨부파일 수정하기 -->
+	<update id="updateArticleImgFileName" parameterType="boardDTO">
+    	<![CDATA[update board set imgFileName = #{imgFileName}
+    	where articleNO = #{articleNO}]]>
+	</update>
+	
+	<!-- 게시글 추천 관련 SQL -->
+	<!-- 게시글 추천수 증가, 감소 -->
+	<update id="addLike" parameterType="int">
+		<![CDATA[update board set likeNO = likeNO+1 where articleNO = #{articleNO}]]>
+	</update>
+	
+	<update id="cancelLike" parameterType="int">
+		<![CDATA[update board set likeNO = likeNO-1 where articleNO = #{articleNO}]]>
+	</update>
+	
+	<!-- 게시글 추천 레코드 추가, 삭제 -->
+	<insert id="insertLike" parameterType="java.util.HashMap">
+		<![CDATA[insert into boardlike values(#{articleNO}, #{member_id})]]>
+	</insert>
+	
+	<delete id="deleteLike" parameterType="java.util.HashMap">
+		<![CDATA[delete from boardlike where articleNO = #{articleNO} and member_id = #{member_id}]]>
+	</delete>
+	
+	<!-- 게시글 추천 기록 있는지 확인 (0 또는 1 반환) -->
+	<select id="likeCheck" resultType="int">
+		<![CDATA[select count(*) from boardlike where articleNO = #{articleNO} and member_id = #{member_id}]]>
+	</select>
+	
+	
+	<!-- 조회수 증가 -->
+	<update id="updateHit" parameterType="int">
+		<![CDATA[update board set hit = hit+1 where articleNO = #{articleNO}]]>
+	</update>
+	
+	<!-- 검색어로 게시글 여러 개 찾기 -->
+	<select id="searchArticleByKeyword" parameterType="java.util.HashMap" resultMap="boardResult">
+		<![CDATA[select * from board]]>
+		<where>
+			<choose>
+				<!-- 통합 검색은 컬럼 3개 모두 포함해 검색 -->
+				<when test="searchType.equals('all')">
+					title like concat('%', #{keyword}, '%') 
+					or content like concat('%', #{keyword}, '%') 
+					or nickname like concat('%', #{keyword}, '%') 
+					or member_id like concat('%', #{keyword}, '%')
+				</when>
+				<!-- 작성자 검색은 닉네임, 아이디 컬럼 포함해 검색 -->
+				<when test="searchType.equals('writer')">
+					nickname like concat('%', #{keyword}, '%') 
+					or member_id like concat('%', #{keyword}, '%')
+				</when>
+				<!-- 나머지는 각각 컬럼에서 검색 -->
+				<when test="searchType!=null">
+					${searchType} like concat('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					1=0
+				</otherwise>
+			</choose>
+		</where>
+		order by writeDate desc
+	</select>
+	
+	
+	<!-- 댓글 관련 SQL -->
+	<!-- 특정 글의 전체 댓글 가져오기 -->
+	<select id="selectCommentByArticleNO" resultMap="commentResult" parameterType="int">
+		<![CDATA[select * from comment where articleNO = #{articleNO} order by cmtWriteDate asc]]>
+	</select>
+	
+	<!-- 댓글 번호로 작성자 아이디 찾기 -->
+	<select id="selectMember_idByCommentNO" resultType="String" parameterType="int">
+		<![CDATA[select member_id from comment where commentNO = #{commentNO}]]>
+	</select>
+	
+	<!-- 댓글 작성하기 -->
+	<insert id="insertComment" parameterType="commentDTO">
+		<![CDATA[insert into comment(member_id, nickname, cmtContent, articleNO) values(#{member_id}, #{nickname}, #{cmtContent}, #{articleNO})]]>
+	</insert>
+	
+	<!-- 댓글 수정하기 -->
+	<update id="updateComment" parameterType="java.util.HashMap">
+		<![CDATA[update comment set cmtContent = #{cmtContent} where commentNO = #{commentNO}]]>
+	</update>
+	
+	<!-- 댓글 삭제하기 -->
+	<delete id="deleteComment" parameterType="int">
+		<![CDATA[delete from comment where commentNO = #{commentNO}]]>
+	</delete>
+	
+	<!-- 특정 글의 댓글수 가져오기 -->
+	<select id="countCommentByArticleNO" resultType="int">
+		<![CDATA[select comments from board where articleNO = #{articleNO}]]>
+	</select>
+	
+	<!-- 댓글수 증가, 감소 -->
+	<!-- 글번호로 글 찾아서 댓글수 +1 또는 -1 -->
+	<update id="updateBoardComment" parameterType="java.util.HashMap">
+		<![CDATA[update board set comments = comments + #{amount} where articleNO = #{articleNO}]]>
+	</update>
+	
+	<!-- 한페이지에 들어갈 수 만큼 게시물 가져오기 -->
+	<select id="selectPageArticle" parameterType="hashMap" resultMap="boardResult">
+		<![CDATA[select board.*, popcornmember.memberImgName
+		from board
+		left join popcornmember ON board.member_id = popcornmember.member_id
+		order by board.writeDate desc
+		limit #{displayPost}, #{postNum}]]>
+	</select>
+	
+	<!-- 총 게시글 갯수  -->
+	<select id="countArticles" resultType="int">
+		<![CDATA[select count(articleNO) from board]]>
+	</select>
+	
+	
+	<!--  검색으로 찾은 게시글 수  -->
+	<select id="countSearchArticleByKeyword" parameterType="java.util.HashMap" resultType="int">
+		<![CDATA[select count(articleNO) from board]]>
+		<where>
+			<choose>
+				<!-- 통합 검색은 컬럼 3개 모두 포함해 검색 -->
+				<when test="searchType.equals('all')">
+					title like concat('%', #{keyword}, '%') 
+					or content like concat('%', #{keyword}, '%') 
+					or nickname like concat('%', #{keyword}, '%') 
+					or member_id like concat('%', #{keyword}, '%')
+				</when>
+				<!-- 작성자 검색은 닉네임, 아이디 컬럼 포함해 검색 -->
+				<when test="searchType.equals('writer')">
+					nickname like concat('%', #{keyword}, '%') 
+					or member_id like concat('%', #{keyword}, '%')
+				</when>
+				<!-- 나머지는 각각 컬럼에서 검색 -->
+				<when test="searchType!=null">
+					${searchType} like concat('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					1=0
+				</otherwise>
+			</choose>
+		</where>
+		order by writeDate desc
+	</select>
+	
+	<!--  member_id 로 게시글 개수 세기 -->
+	<select id="countArticlesByMember_id" parameterType="String" resultType="int">
+		<![CDATA[
+			select count(articleNO) from board where member_id = #{member_id}
+		]]>
+	</select>
+	
+	<!-- 검색어로 게시글 여러개 찾기 + 페이징  -->
+	<select id="searchPageArticleByKeyword" parameterType="java.util.HashMap" resultMap="boardResult">
+		<![CDATA[select board.*, popcornmember.memberImgName
+		from board
+		left join popcornmember ON board.member_id = popcornmember.member_id
+		]]>
+		<where>
+			<choose>
+				<!-- 통합 검색은 컬럼 3개 모두 포함해 검색 -->
+				<when test="searchType.equals('all')">
+					board.title like concat('%', #{keyword}, '%') 
+					or board.content like concat('%', #{keyword}, '%') 
+					or board.nickname like concat('%', #{keyword}, '%') 
+					or board.member_id like concat('%', #{keyword}, '%')
+				</when>
+				<!-- 작성자 검색은 닉네임, 아이디 컬럼 포함해 검색 -->
+				<when test="searchType.equals('writer')">
+					board.nickname like concat('%', #{keyword}, '%') 
+					or board.member_id like concat('%', #{keyword}, '%')
+				</when>
+				<!-- 나머지는 각각 컬럼에서 검색 -->
+				<when test="searchType!=null">
+					board.${searchType} like concat('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					1=0
+				</otherwise>
+			</choose>
+		</where>
+		order by board.writeDate desc
+		limit #{displayPost}, #{postNum}
+	</select>
+	
+	<!-- 특정글 댓글 페이징 처리해서 가져오기  -->
+	<select id="selectPageCommentByArticleNO" resultMap="commentResult" parameterType="java.util.HashMap">
+		<![CDATA[select comment.*, popcornmember.memberImgName
+		from comment
+		left join popcornmember ON comment.member_id = popcornmember.member_id
+		where comment.articleNO = #{articleNO}
+		order by comment.cmtWriteDate asc
+		limit #{displayPost}, #{postNum}]]>
+	</select>
+	<!-- <![CDATA[select * from comment where articleNO = #{articleNO} order by cmtWriteDate asc limit #{displayPost}, #{postNum}]]> -->
+ </mapper>
