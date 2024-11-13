@@ -35,15 +35,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-@Controller("OpenAPIController")
+@Controller
 public class OpenAPIController {
 
     String key = "aacda2bad5836d6156ba855b1db4461a"; //Kobis(영진위) 발급키
     KobisOpenAPIRestService service = new KobisOpenAPIRestService(key);
+
     @Autowired
     private AdminMovieService movieService;
 
-    //메인 화면
+    /*
+    movieCd : 영진위 코드
+    movie_id : 팝콘피디아 DB 추가 순서
+     */
+
+    //메인 화면 - 영진위 일간 박스오피스
     @RequestMapping(value = {"/", "/movie/mainMovie"})
     public ModelAndView getBoxOfficeKobis(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -75,7 +81,7 @@ public class OpenAPIController {
             String movie_Cd = obj.getJSONObject("boxOfficeResult").getJSONArray("dailyBoxOfficeList").getJSONObject(i).getString("movieCd");
             String movie_id = String.valueOf(movieService.getMovieID(movie_Cd));
             MovieDTO dto = movieService.selectOneMovie(movie_id);
-            String poster = (dto != null) ? "http://image.tmdb.org/t/p/w500" + dto.getMoviePosterPath() : "/popcornpedia/resources/images/movie/ready300.png";
+            String poster = (dto != null) ? "http://image.tmdb.org/t/p/w500" + dto.getMoviePosterPath() : "/popcornpediass/resources/images/movie/ready300.png";
             posterPathList.add(poster);
         }
 
@@ -260,7 +266,7 @@ public class OpenAPIController {
                 MovieDTO dto = movieService.selectOneMovie(movieId);
                 getPosterPath = dto.getMoviePosterPath();
                 if (getPosterPath == null || getPosterPath.isEmpty()) {  //posterpath가 안 채워진 경우(없는 경우) << 이건 검증 필요함
-                    movie.put("posterPath", "/popcornpedia/resources/images/movie/ready300.png");
+                    movie.put("posterPath", "/popcornpedias/resources/images/movie/ready300.png");
                 } else {
                     getPosterPath = "http://image.tmdb.org/t/p/w200" + dto.getMoviePosterPath();
                     movie.put("posterPath", getPosterPath); //키 추가하기
@@ -302,13 +308,13 @@ public class OpenAPIController {
                         tempPosterPath = json.getJSONArray("results").getJSONObject(0).getString("poster_path");
                         if (tempPosterPath == null || tempPosterPath.isEmpty()) //그래도 혹시나 포스터 URL을 못 가져오는 경우
                         {
-                            posterPath = "/popcornpedia/resources/images/movie/ready300.png";
+                            posterPath = "/popcornpedias/resources/images/movie/ready300.png";
                         } else {
                             posterPath = "http://image.tmdb.org/t/p/w200" + tempPosterPath;
                         }
                         movie.put("posterPath", posterPath);
                     } else {
-                        posterPath = "/popcornpedia/resources/images/movie/ready300.png";
+                        posterPath = "/popcornpedias/resources/images/movie/ready300.png";
                         movie.put("posterPath", posterPath);
                     }
                     movie.put("movieYear", movieYear);
@@ -431,7 +437,7 @@ public class OpenAPIController {
                 posterPath = json.getJSONArray("results").getJSONObject(0).getString("poster_path");
                 if (posterPath == null || posterPath.equals("")) //그래도 혹시나 포스터 URL을 못 가져오는 경우
                 {
-                    posterPath = "/popcornpedia/resources/images/movie/ready300.png";
+                    posterPath = "/popcornpedias/resources/images/movie/ready300.png";
                     dto.setMoviePosterPath(posterPath);
                 } else {
                     dto = new MovieDTO(movieNm, movieNmEn, movieYear, movieGenres.toString(), movieNation, movieDirector.toString(), actors.toString(), movieGrade, showTm, posterPath, backdropPath, overView, movieCd);
@@ -443,7 +449,7 @@ public class OpenAPIController {
             } else if (total_results == 0) { //TMDB에 결과가 안 나오는 경우 (이미지, 줄거리가 없는 경우) 그냥 DTO에 영진위 정보 담음
                 dto = new MovieDTO(movieNm, movieNmEn, movieYear, movieGenres.toString(), movieNation, movieDirector.toString(), actors.toString(), movieGrade, showTm, movieCd);
                 movieService.insertMovie(dto);
-                posterPath = "/popcornpedia/resources/images/movie/ready300.png";
+                posterPath = "/popcornpedias/resources/images/movie/ready300.png";
                 dto.setMoviePosterPath(posterPath);
                 model.addAttribute("dto", dto);
             }

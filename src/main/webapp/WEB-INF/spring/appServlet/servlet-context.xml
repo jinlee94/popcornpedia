@@ -46,6 +46,11 @@
         	<exclude-mapping path="/board/getComment.do"/>
             <beans:ref bean="loginCheckInterceptor" />
 	    </interceptor>
+
+		<interceptor>
+			<mapping path="/admin/*"/>
+			<beans:ref bean="boardAuthCheckInterceptor" />
+		</interceptor>
 	    
 	    <interceptor>
         	<mapping path = "/board/modArticle"/>
