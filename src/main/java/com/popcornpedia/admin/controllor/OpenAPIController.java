@@ -47,25 +47,13 @@ public class OpenAPIController {
     @RequestMapping(value = {"/", "/movie/mainMovie"})
     public ModelAndView getBoxOfficeKobis(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        //어제 날짜 구하는 메서드 (일간 박스오피스)
+        // 일간 박스오피스
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -1);
         Date yesterday = cal.getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         //System.out.println("어제 날짜 (yyyyMMdd 형식): " + formattedYesterday);
 		
-        /*
-		//지난주 일요일 날짜 구하는 메서드 (주간 박스오피스)
-		cal.add(Calendar.DATE, -7);
-		int nWeek = cal.get(Calendar.DAY_OF_WEEK);
-		cal.add(Calendar.DATE, 2-nWeek);//요일에서 월요일 되도록 뺌	
-		//지난주 일요일
-		cal.add(Calendar.DATE, 6);//월요일 부터 일요일까지의 날짜 더함
-		int nMonth  = cal.get(Calendar.MONTH)+1;
-		String dayLastWeekTo = cal.get(Calendar.YEAR) + (nMonth<10?"0"+nMonth:nMonth+"") + (cal.get(Calendar.DATE)<10?"0"+cal.get(Calendar.DATE):cal.get(Calendar.DATE)+"");
-		System.out.println("dayLastWeekTo:"+dayLastWeekTo);
-		*/
-
         //박스오피스 api 변수설정
         // String targetDt = dateFormat.format(yesterday);
         String targetDt = "20230907";
@@ -227,7 +215,7 @@ public class OpenAPIController {
 
 
     //Kobis (영진위) 검색결과   (포스터까지 모두 출력 >>속도 느림<<)
-    @RequestMapping(value = "/movie/searchResultKobis.do")
+    @RequestMapping(value = "/admin/searchResultKobis.do")
     public ModelAndView searchMovieKobis(@ModelAttribute("keyword") MovieDTO movieDTO, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 
         request.setCharacterEncoding("utf-8");
@@ -333,7 +321,7 @@ public class OpenAPIController {
         } //for문 끝
 
         model.addAttribute("result", result);
-        return new ModelAndView("/movie/kobisResultMovie");
+        return new ModelAndView("/admin/kobisResultMovie");
     }
 
 

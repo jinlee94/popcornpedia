@@ -23,15 +23,19 @@
 
 		<div class="collapse navbar-collapse" id="leftNav">
 			<ul class="navbar-nav">
+			<c:choose>
+				<c:when test="${user.member_id == 'admin' && user.nickname == '관리자'}">
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">관리자</a>
 					<ul class="dropdown-menu">
 						<li><a class="dropdown-item" href="${contextPath}/admin/listMember.do">회원 조회</a></li>
 						<li><hr class="dropdown-divider"></li>
 						<li><a class="dropdown-item" href="${contextPath}/admin/listMovie">영화 조회</a></li>
-						<li><a class="dropdown-item" href="${contextPath}/movie/search">Kobis 영화 검색</a></li>
+						<li><a class="dropdown-item" href="${contextPath}/admin/search">Kobis 영화 검색</a></li>
 					</ul>
 				</li>
+				</c:when>
+			</c:choose>
 
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">🎬 영화</a>

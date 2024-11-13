@@ -124,9 +124,9 @@ public class AdminMovieControllerImpl{
 
 	//영화 검색 페이지로 이동하기 (kobis 검색용)
 	@org.springframework.web.bind.annotation.ResponseBody
-	@RequestMapping(value = "/movie/search")
+	@RequestMapping(value = "/admin/search")
 	public ModelAndView goSearchForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView("/movie/kobisSearchMovie");
+		ModelAndView mav = new ModelAndView("/admin/kobisSearchMovie");
 		return mav;
 	}
 	

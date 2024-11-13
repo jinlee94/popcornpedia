@@ -39,7 +39,7 @@ function confirmDelete(event) {
 	<div class="mt-3 d-flex" style="justify-content: space-between;">
 		<div class="align-middle fst-italic mt-4">전체 회원수 : ${total }</div>
 		<div class="text-end mb-3">
-			<a href="/popcornpedia/admin/memberForm" class="btn btn-primary">회원 추가하기(관리자 테스트용)</a>
+			<a href="/popcornpedias/admin/memberForm" class="btn btn-primary">회원 추가하기(관리자 테스트용)</a>
 		</div>
 	</div>
 	<table border="1"  align="center"  width="90%" class="table table-border table-hover align-middle">

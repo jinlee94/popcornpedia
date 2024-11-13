@@ -29,8 +29,7 @@ public class AdminMemberControllerImpl{
 	//관리자용 회원 추가 입력 Form으로 가기
 	@RequestMapping(value = "/admin/memberForm")
 	public ModelAndView goMemberForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView mav = new ModelAndView("/admin/testForm");
-		return mav;
+		return new ModelAndView("/admin/memberForm");
 	}
 
 	
@@ -70,7 +69,7 @@ public class AdminMemberControllerImpl{
 		MemberDTO memberDTO = memberService.selectOneMember(member_id);
 		ModelAndView mav = new ModelAndView();
 		request.setAttribute("memberDTO", memberDTO);
-		mav.setViewName("/admin/testForm");
+		mav.setViewName("/admin/memberForm");
 		System.out.println("수정 페이지로 이동하기");
 		return mav;
 	}

@@ -11,7 +11,7 @@
 	
 	MemberDTO dto =(MemberDTO) request.getAttribute("memberDTO");
 	if(dto != null){
-		action = "/popcornpedia/admin/updateMember.do";
+		action = "/popcornpedias/admin/updateMember.do";
 		member_id = "value=" +dto.getMember_id();
 		readonly = "readonly style='background-color:#dfdfdf;'";
 		nickname = "value="+dto.getNickname();
@@ -22,7 +22,7 @@
 		checked ="checked";
 	}
 	else{
-		action = "/popcornpedia/admin/insertMember.do";
+		action = "/popcornpedias/admin/insertMember.do";
 		member_id = "";
 		pwd="";
 		readonly = "";
@@ -56,20 +56,20 @@
 		<table class="table align-middle tb-input text-center mt-3 mb-3" style="width:370px; align:center; margin:0px auto">
 		   <tr>
 		      <td align="right">아이디</td>
-		     <td><input type="text" maxlength="20" placeholder="최대 20자" name="member_id"<%=member_id %> <%=readonly %>></td>
+		     <td><input type="text" maxlength="20" placeholder="최대 20자" name="member_id"<%=member_id %> <%=readonly %> required></td>
 		   </tr>
 		   
 		   <tr>
 		      <td align="right">비밀번호</td>
-		     <td><input type="password" maxlength="20" placeholder="<%if(dto==null){ %>최대 20자<%} else{ %>수정 불가<%} %>" name="pwd" <%=readonly %>></td>
+		     <td><input type="password" maxlength="20" placeholder="<%if(dto==null){ %>최대 20자<%} else{ %>수정 불가<%} %>" name="pwd" <%=readonly %> required></td>
 		    </tr>
 		    <tr>
 		       <td><p align="right">닉네임</td>
-		      <td><p><input type="text" maxlength="20" placeholder="최대 20자" name="nickname"<%=nickname %>></td>
+		      <td><p><input type="text" maxlength="20" placeholder="최대 20자" name="nickname"<%=nickname %> required></td>
 		    </tr>
 		    <tr>
 		      <td><p align="right">이메일</td>
-		       <td><p><input type="text" maxlength="40" placeholder="email@gmail.com" name="email"<%=email %>></td>
+		       <td><p><input type="text" maxlength="40" placeholder="email@gmail.com" name="email"<%=email %> required></td>
 		    </tr>
 		    <tr>
 		    	<td><p align="right">성별</td>
@@ -101,7 +101,7 @@
 		    </tr>
 		</table>
 	</form>
-	<br><h4 align="center"><a href="/popcornpedia/admin/listMember.do" class="btn btn-primary">전체 회원 조회</a></h4>
+	<br><h4 align="center"><a href="/popcornpedias/admin/listMember.do" class="btn btn-primary">전체 회원 조회</a></h4>
 </div>
 
 <%@ include file="../common/footer.jsp" %>	

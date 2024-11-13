@@ -3,14 +3,15 @@
 	xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-						http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/security
-						https://www.springframework.org/schema/security/spring-security-5.4.xsd">
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans.xsd
+                    http://www.springframework.org/schema/security
+                    http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
 	<http use-expressions="true">
 		<intercept-url pattern="/admin/*" access="hasAuthority('ROLE_ADMIN')" />
-		<form-login/>
+		<form-login 
+		authentication-failure-url="/login?error=true"/>
 		<csrf/>
 		<logout/>
 	</http>
@@ -18,7 +19,7 @@
 	<authentication-manager>
 		<authentication-provider>
 			<user-service>
-				<user name="Admin" password="{noop}Admin1234" authorities="ROLE_ADMIN"/>
+				<user name="admin" password="1234admin1234" authorities="ROLE_ADMIN"/>
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>
