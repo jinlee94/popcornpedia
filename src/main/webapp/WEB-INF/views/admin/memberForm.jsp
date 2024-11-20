@@ -53,31 +53,30 @@
             회원정보 수정 페이지
             <%} %>
         </h3>
-        <table class="table align-middle tb-input text-center mt-3 mb-3"
-               style="width:370px; align:center; margin:0px auto">
+        <table class="add-form-box mt-5">
             <tr>
-                <td align="right">아이디</td>
+                <th>아이디</th>
                 <td><input type="text" maxlength="20" placeholder="최대 20자"
                            name="member_id"<%=member_id %> <%=readonly %> required></td>
             </tr>
 
             <tr>
-                <td align="right">비밀번호</td>
+                <th>비밀번호</th>
                 <td><input type="password" maxlength="20" placeholder="<%if(dto==null){ %>최대 20자<%} else{ %>수정 불가<%} %>"
                            name="pwd" <%=readonly %> required></td>
             </tr>
             <tr>
-                <td><p align="right">닉네임</td>
+                <th>닉네임</th>
                 <td><p><input type="text" maxlength="20" placeholder="최대 20자" name="nickname"<%=nickname %> required>
                 </td>
             </tr>
             <tr>
-                <td><p align="right">이메일</td>
+                <th>이메일</th>
                 <td><p><input type="text" maxlength="40" placeholder="email@gmail.com" name="email"<%=email %> required>
                 </td>
             </tr>
             <tr>
-                <td><p align="right">성별</td>
+                <th>성별</th>
                 <td>
                     <p>
                             <% if(gender != null){
@@ -101,8 +100,7 @@
             </tr>
             <input type="hidden" <%=pic %> name="image_original">
             <tr>
-                <td><p>&nbsp;</p></td>
-                <td><input type="submit" value="<%if(dto==null){ %>가입하기<%} else{%>수정하기<%}%>" class="btn btn-primary"
+                <td colspan="2" align="center"><input type="submit" value="<%if(dto==null){ %>가입하기<%} else{%>수정하기<%}%>" class="btn btn-primary"
                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem;">
                     <input type="reset" value="다시입력" class="btn btn-secondary"
                            style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .85rem;">

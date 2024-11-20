@@ -38,18 +38,19 @@ import okhttp3.Response;
 @Controller
 public class OpenAPIController {
 
-    String key = "aacda2bad5836d6156ba855b1db4461a"; //Kobis(영진위) 발급키
+	/*
+    movieCd : 영진위 코드
+    movie_id : 팝콘피디아 DB 추가 순서
+	 */
+	
+    String key = "aacda2bad5836d6156ba855b1db4461a"; //Kobis(영진위) 발급키 (git에 올릴 때 삭제)
     KobisOpenAPIRestService service = new KobisOpenAPIRestService(key);
 
     @Autowired
     private AdminMovieService movieService;
 
-    /*
-    movieCd : 영진위 코드
-    movie_id : 팝콘피디아 DB 추가 순서
-     */
 
-    //메인 화면 - 영진위 일간 박스오피스
+    // 메인 화면 - 영진위 일간 박스오피스
     @RequestMapping(value = {"/", "/movie/mainMovie"})
     public ModelAndView getBoxOfficeKobis(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -58,23 +59,22 @@ public class OpenAPIController {
         cal.add(Calendar.DAY_OF_MONTH, -1);
         Date yesterday = cal.getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        //System.out.println("어제 날짜 (yyyyMMdd 형식): " + formattedYesterday);
-		
-        //박스오피스 api 변수설정
         // String targetDt = dateFormat.format(yesterday);
+
+        // 박스오피스 api 변수설정
         String targetDt = "20230907";
         String itemPerPage = request.getParameter("itemPerPage");
         String multiMovieYn = request.getParameter("multiMovieYn");
         String repNationCd = request.getParameter("repNationCd");
         String wideAreaCd = request.getParameter("wideAreaCd");
 
-        //일일 박스오피스
+        // 일일 박스오피스
         String dailyResponse = service.getDailyBoxOffice(true, targetDt, itemPerPage, multiMovieYn, repNationCd, wideAreaCd);
         ObjectMapper mapper = new ObjectMapper();
         HashMap<String, Object> dailyResult = mapper.readValue(dailyResponse, HashMap.class); //가져온 json정보를 hashmap에 담는다.
         request.setAttribute("dailyResult", dailyResult);
 
-        //박스오피스 포스터 이미지 담기(이미지 없으면 준비중.png)
+        // 박스오피스 포스터 이미지 담기(이미지 없으면 준비중 띄우기)
         JSONObject obj = new JSONObject(dailyResult);
         List<String> posterPathList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -85,51 +85,41 @@ public class OpenAPIController {
             posterPathList.add(poster);
         }
 
-        //누적 관객수를 만 단위로 표시하고 JSON에 추가하기
+        // 누적 관객수를 만 단위로 표시하고 JSON에 추가하기
         HashMap<String, Object> boxOfficeResult = (HashMap<String, Object>) dailyResult.get("boxOfficeResult");
         ArrayList<HashMap<String, Object>> dailyBoxOfficeList = (ArrayList<HashMap<String, Object>>) boxOfficeResult.get("dailyBoxOfficeList");
         //List<String> audiList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             int audi = Integer.parseInt(obj.getJSONObject("boxOfficeResult").getJSONArray("dailyBoxOfficeList").getJSONObject(i).getString("audiAcc"));
             HashMap<String, Object> movie = dailyBoxOfficeList.get(i);
-            String audien;
+            String audience;
             if (audi > 10000) {
-                audien = (audi / 10000) + "만명";
+                audience = (audi / 10000) + "만명";
             } else {
                 DecimalFormat df = new DecimalFormat("###,###");
-                audien = df.format(audi) + "명";
+                audience = df.format(audi) + "명";
             }
-            movie.put("audi", audien);
+            movie.put("audience", audience);
         }
 
+        // 순위 변동
         for (int i = 0; i < 10; i++) {
             int rankInten = Integer.parseInt(obj.getJSONObject("boxOfficeResult").getJSONArray("dailyBoxOfficeList").getJSONObject(i).getString("rankInten"));
             HashMap<String, Object> movie = dailyBoxOfficeList.get(i);
             String dropRank = null;
-            String sameRank = null;
             if (rankInten < 0) {
                 dropRank = String.valueOf(rankInten * -1);
             }
             movie.put("drop", dropRank);
         }
 
-
-        SimpleDateFormat dateformat2 = new SimpleDateFormat("yyyy-MM-dd");
-        //String date2 = dateformat2.format(yesterday);
-        String date2 = "2024-09-07";
-        request.setAttribute("date", date2);
+        //SimpleDateFormat dateformat2 = new SimpleDateFormat("yyyy-MM-dd");
+        //String viewDate = dateformat2.format(yesterday);
+        String viewDate = "2024-09-07";
+        request.setAttribute("date", viewDate);
         request.setAttribute("posterPathList", posterPathList);
-		
 
-		
-		/*		
-		//주간 박스오피스
-		//날짜를 월요일로 설정해야 하는듯
-		String weekResponse = service.getWeeklyBoxOffice(true, dayLastWeekTo, "10", "0", multiMovieYn, repNationCd, wideAreaCd);
-		HashMap<String, Object> weekResult = mapper.readValue(weekResponse, HashMap.class);
-		request.setAttribute("weekResult", weekResult);
-		*/
-
+        // 컬렉션 리스트
         Map<String, List> collection = movieService.getCollection();
         ModelAndView mav = new ModelAndView("/movie/mainmovie");
         mav.addObject("collection", collection);
@@ -140,17 +130,19 @@ public class OpenAPIController {
     }
 
 
-    //영화 입력,수정 FORM에 TMDB에서 오픈 API 정보 가져오기 (관리자 - 영화 조회 - 수동 추가할 때 사용1....)
+    //영화 입력,수정 FORM - TMDB api 사용 (관리자 - 영화 조회 - 수동 추가할 때 사용)
     @RequestMapping(value = "/admin/getposterurl")
     public void findPosterPath(@RequestParam("movieID") int movieID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("getPostURL 가져온 값 : " + movieID);
         request.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=utf-8");
+        
+        // 가져오기
         TmdbMovies movies = new TmdbApi("bca7c5aae23ca2a083040f3f174f17a2").getMovies();
         MovieDb movie = movies.getMovie(movieID, "ko-kr");
-        String posterPath = movie.getPosterPath();
-        String overView = movie.getOverview();
-        String backdropPath = movie.getBackdropPath();
+        String posterPath = movie.getPosterPath(); // 포스터 이미지
+        String overView = movie.getOverview(); // 줄거리
+        String backdropPath = movie.getBackdropPath(); // 배경화면 이미지
 
         //담기
         PrintWriter pw = response.getWriter();
@@ -163,23 +155,23 @@ public class OpenAPIController {
     }
 
 
-    //영화 입력,수정 FORM에 영진위 정보 가져오기 (관리자 - 영화 조회 - 수동 추가할 때 사용2....)
+    //영화 입력,수정 FORM - 영진위 api 사용 (관리자 - 영화 조회 - 수동 추가할 때 사용)
     @RequestMapping(value = "/admin/getkobisAPI")
     public void getKobisAPI(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         request.setCharacterEncoding("utf-8");
         response.setContentType("text/html; charset=utf-8");
 
-        String curPage = request.getParameter("curPage") == null ? "1" : request.getParameter("curPage");                    //현재페이지
-        String itemPerPage = request.getParameter("itemPerPage") == null ? "30" : request.getParameter("itemPerPage");        //결과row수
+        String curPage = request.getParameter("curPage") == null ? "1" : request.getParameter("curPage");                    	//현재페이지
+        String itemPerPage = request.getParameter("itemPerPage") == null ? "30" : request.getParameter("itemPerPage");        	//결과row수
         String movieNm = request.getParameter("movieNm") == null ? "" : request.getParameter("movieNm");                        //영화명
-        String directorNm = request.getParameter("directorNm") == null ? "" : request.getParameter("directorNm");                //감독명
+        String directorNm = request.getParameter("directorNm") == null ? "" : request.getParameter("directorNm");               //감독명
         String openStartDt = request.getParameter("openStartDt") == null ? "" : request.getParameter("openStartDt");            //개봉연도 시작조건 ( YYYY )
-        String openEndDt = request.getParameter("openEndDt") == null ? "" : request.getParameter("openEndDt");                //개봉연도 끝조건 ( YYYY )
-        String prdtStartYear = request.getParameter("prdtStartYear") == null ? "" : request.getParameter("prdtStartYear");    //제작연도 시작조건 ( YYYY )
+        String openEndDt = request.getParameter("openEndDt") == null ? "" : request.getParameter("openEndDt");                	//개봉연도 끝조건 ( YYYY )
+        String prdtStartYear = request.getParameter("prdtStartYear") == null ? "" : request.getParameter("prdtStartYear");    	//제작연도 시작조건 ( YYYY )
         String prdtEndYear = request.getParameter("prdtEndYear") == null ? "" : request.getParameter("prdtEndYear");            //제작연도 끝조건    ( YYYY )
         String repNationCd = request.getParameter("repNationCd") == null ? "" : request.getParameter("repNationCd");            //대표국적코드 (공통코드서비스에서 '2204'로 조회된 국가코드)
-        String[] movieTypeCdArr = request.getParameterValues("movieTypeCdArr") == null ? null : request.getParameterValues("movieTypeCdArr");    //영화형태코드 배열 (공통코드서비스에서 '2201'로 조회된 영화형태코드)
+        String[] movieTypeCdArr = request.getParameterValues("movieTypeCdArr") == null ? null : request.getParameterValues("movieTypeCdArr"); //영화형태코드 배열 (공통코드서비스에서 '2201'로 조회된 영화형태코드)
 
         // 영화코드조회 서비스 호출 (boolean isJson, String curPage, String itemPerPage,String directorNm, String movieCd, String movieNm, String openStartDt,String openEndDt, String ordering, String prdtEndYear, String prdtStartYear, String repNationCd, String[] movieTypeCdArr)
         String movieCdResponse = service.getMovieList(true, curPage, itemPerPage, movieNm, directorNm, openStartDt, openEndDt, prdtStartYear, prdtEndYear, repNationCd, movieTypeCdArr);
@@ -187,25 +179,27 @@ public class OpenAPIController {
         // Json 라이브러리를 통해 Handling
         ObjectMapper mapper = new ObjectMapper();
         HashMap result = mapper.readValue(movieCdResponse, HashMap.class);
-
         JSONObject obj = new JSONObject(result);
         String movieCd = obj.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(0).getString("movieCd");
-        String movie_id = obj.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(0).getString("movieNm");
-        System.out.println("영화이름 : " + movie_id + "----- 영화코드: " + movieCd);
-
+        String movieName = obj.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(0).getString("movieNm");
+        System.out.println("영화이름 : " + movieName + "----- 영화코드: " + movieCd);
         System.out.println("영진위API 매핑 확인 제목 : " + movieNm + ",  감독 :" + directorNm);
 
         String movieInfo = service.getMovieInfo(true, movieCd);
 
         JSONObject obj2 = new JSONObject(movieInfo);
+        // 배우 정보
         StringBuilder actors = new StringBuilder(obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("actors").getJSONObject(0).getString("peopleNm"));
         for (int i = 1; i < obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("actors").length(); i++) {
             actors.append(", ").append(obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("actors").getJSONObject(i).getString("peopleNm"));
         }
+        // 상영 시간
         String showTm = obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getString("showTm");
+        // 상영 등급
         String grade = obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("audits").getJSONObject(0).getString("watchGradeNm");
+        // 영어 영화명
         String movieNmEn = obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getString("movieNmEn");
-
+        // 영화 코드
         String movieCd2 = obj.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(0).getString("movieCd");
 
         PrintWriter pw = response.getWriter();
@@ -216,7 +210,7 @@ public class OpenAPIController {
         jo.put("grade", grade);
         jo.put("movieNmEn", movieNmEn);
         pw.print(jo);
-        System.out.println("배우진 : " + actors);
+        // System.out.println("배우진 : " + actors);
     }
 
 
@@ -228,24 +222,24 @@ public class OpenAPIController {
         System.out.println("영진위 검색결과 키워드 : " + movieDTO.getKeyword());
 
         // 파라메터 설정
-        String curPage = request.getParameter("curPage") == null ? "1" : request.getParameter("curPage");                    //현재페이지
-        String itemPerPage = request.getParameter("itemPerPage") == null ? "30" : request.getParameter("itemPerPage");        //결과row수
-        String movieNm = movieDTO.getKeyword() == null ? "" : movieDTO.getKeyword();                        //영화명
-        String directorNm = request.getParameter("directorNm") == null ? "" : request.getParameter("directorNm");                //감독명
+        String curPage = request.getParameter("curPage") == null ? "1" : request.getParameter("curPage");                    		//현재페이지
+        String itemPerPage = request.getParameter("itemPerPage") == null ? "30" : request.getParameter("itemPerPage");      	  	//결과row수
+        String movieNm = movieDTO.getKeyword() == null ? "" : movieDTO.getKeyword();                        						//영화명
+        String directorNm = request.getParameter("directorNm") == null ? "" : request.getParameter("directorNm");              		//감독명
         String openStartDt = request.getParameter("openStartDt") == null ? "1950" : request.getParameter("openStartDt");            //개봉연도 시작조건 ( YYYY )
-        String openEndDt = request.getParameter("openEndDt") == null ? "" : request.getParameter("openEndDt");                //개봉연도 끝조건 ( YYYY )
-        String prdtStartYear = request.getParameter("prdtStartYear") == null ? "1950" : request.getParameter("prdtStartYear");    //제작연도 시작조건 ( YYYY )
-        String prdtEndYear = request.getParameter("prdtEndYear") == null ? "" : request.getParameter("prdtEndYear");            //제작연도 끝조건    ( YYYY )
-        String repNationCd = request.getParameter("repNationCd") == null ? "" : request.getParameter("repNationCd");            //대표국적코드 (공통코드서비스에서 '2204'로 조회된 국가코드)
-        String[] movieTypeCdArr = request.getParameterValues("movieTypeCdArr") == null ? null : request.getParameterValues("movieTypeCdArr");    //영화형태코드 배열 (공통코드서비스에서 '2201'로 조회된 영화형태코드)
+        String openEndDt = request.getParameter("openEndDt") == null ? "" : request.getParameter("openEndDt");                		//개봉연도 끝조건 ( YYYY )
+        String prdtStartYear = request.getParameter("prdtStartYear") == null ? "1950" : request.getParameter("prdtStartYear");    	//제작연도 시작조건 ( YYYY )
+        String prdtEndYear = request.getParameter("prdtEndYear") == null ? "" : request.getParameter("prdtEndYear");            	//제작연도 끝조건    ( YYYY )
+        String repNationCd = request.getParameter("repNationCd") == null ? "" : request.getParameter("repNationCd");            	//대표국적코드 (공통코드서비스에서 '2204'로 조회된 국가코드)
+        String[] movieTypeCdArr = request.getParameterValues("movieTypeCdArr") == null ? null : request.getParameterValues("movieTypeCdArr"); //영화형태코드 배열 (공통코드서비스에서 '2201'로 조회된 영화형태코드)
 
         // 영화코드조회 서비스 호출 (boolean isJson, String curPage, String itemPerPage,String directorNm, String movieCd, String movieNm, String openStartDt,String openEndDt, String ordering, String prdtEndYear, String prdtStartYear, String repNationCd, String[] movieTypeCdArr)
         String movieCdResponse = service.getMovieList(true, curPage, itemPerPage, movieNm, directorNm, openStartDt, openEndDt, prdtStartYear, prdtEndYear, repNationCd, movieTypeCdArr);
 
-        // Json 라이브러리를 통해 Handling
+        // Json 라이브러리
         ObjectMapper mapper = new ObjectMapper();
         HashMap<String, Object> result = mapper.readValue(movieCdResponse, HashMap.class);
-        System.out.println("result 확인 : " + result); //이거 확인하면 삭제
+        // System.out.println("result 확인 : " + result);
 
         // "movieListResult" 키 아래에 있는 "movieList" HashMap 가져오기
         HashMap<String, Object> movieListResult = (HashMap<String, Object>) result.get("movieListResult");
@@ -254,15 +248,15 @@ public class OpenAPIController {
         JSONObject jo = new JSONObject(result);
         for (int i = 0; i < movieList.size(); i++) {
             String movieCd = jo.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(i).getString("movieCd");
-            System.out.print(i + "번째 영화 코드 : " + movieCd + ", ");
+            //System.out.print(i + "번째 영화 코드 : " + movieCd + ", ");
             int movie_id = movieService.getMovieID(movieCd);
-            System.out.print(i + "번째 영화 아이디 : " + movie_id + ", ");
+            //System.out.print(i + "번째 영화 아이디 : " + movie_id + ", ");
             if (movie_id > 0) //movie_id를 가져오면 DB에서 posterPath 가져와서 JSON 내용에 추가하기
             {
                 String movieId = String.valueOf(movie_id);
                 String getPosterPath;
-                HashMap<String, Object> movie = movieList.get(i);     //  i번째 영화
-
+                
+                HashMap<String, Object> movie = movieList.get(i);
                 MovieDTO dto = movieService.selectOneMovie(movieId);
                 getPosterPath = dto.getMoviePosterPath();
                 if (getPosterPath == null || getPosterPath.isEmpty()) {  //posterpath가 안 채워진 경우(없는 경우) << 이건 검증 필요함
@@ -276,7 +270,7 @@ public class OpenAPIController {
             {
                 System.out.println("movie_id 못찾았음. else if 실행");
                 HashMap<String, Object> movie = movieList.get(i);
-//여기부터 코드 새로 추가
+                //여기부터 코드 새로 추가
                 try //substring 때문에 예외발생해서 try, catch문 추가함
                 {
                     String movieInfo = service.getMovieInfo(true, movieCd);
@@ -286,7 +280,7 @@ public class OpenAPIController {
                     String movieYear = openDt.substring(0, 4);
 
                     System.out.println("영화 제목 :" + movieName + ", 연도 : " + movieYear);
-// ▼ api 정보 불러오기
+                    // ▼ api 정보 불러오기
                     OkHttpClient client = new OkHttpClient();
                     Request reques = new Request.Builder()
                             .url("https://api.themoviedb.org/3/search/movie?query=" + movieName + "&include_adult=true&language=ko-kr&page=1&year=" + movieYear)

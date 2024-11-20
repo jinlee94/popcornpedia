@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="col px-2 text-truncate">${boxoffice.movieNm}</div>
                                 <div class="col-3 pe-3 text-end"><span
-                                        class="xsmall opacity-75">누적관객수 ${boxoffice.audi }</span></div>
+                                        class="xsmall opacity-75">누적관객수 ${boxoffice.audience }</span></div>
                             </div>
                         </a>
                     </c:forEach>

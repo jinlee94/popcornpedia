@@ -24,7 +24,12 @@
 	<div id="myPageSection" class="h-auto rounded-2 p-3 mx-auto bg-body-tertiary vh-75">
 		<div class="container border bg-white rounded-3 g-0 set-width">
  			<div id="profilesection" class=" mb-4 "> 
-			 	<p><img src="<c:url value='/resources/images/member/${user.member_id }/${user.memberImgName }'/>" width="100" height="100"  ></p>
+			 	<p>
+			 	<c:if test="${not empty user.memberImgName }">
+			 		<img src="<c:url value='/resources/images/member/${user.member_id }/${user.memberImgName }'/>" width="100" height="100"></c:if>
+                <c:if test="${empty user.memberImgName }">
+                	<img src="<c:url value='/resources/images/common/default-profile.png'/>" width="100" height="100"></c:if>
+                </p>
 			 	<P id="nicknameText"> ${user.nickname } </P>
 			 	<p> ${user.profileMessage } </p>
 		 	</div>

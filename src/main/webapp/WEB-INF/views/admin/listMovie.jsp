@@ -27,7 +27,8 @@
 </head>
 <body>
 <%@ include file="../common/nav.jsp" %>
-<h2 class="fw-bold text-center mt-5"><a href="${contextPath }/admin/listMovie">영화 조회</a></h2>
+<h2 class="fw-bold text-center mt-5 mb-1"><a href="${contextPath }/admin/listMovie">영화 조회</a></h2>
+<div class="container">
 <form method="get" action="${contextPath}/admin/searchMovie.do" align="center">
     <select name="searchType" class="searchForm">
         <option value="movie_id">movid_ID</option>
@@ -38,7 +39,7 @@
     <input type="text" size="30" name="keyword" class="searchForm">
     <input type="submit" value="검색" class="btn btn-outline-primary">
 </form>
-<div class="container">
+
     <div style="display: flex; justify-content: space-between;">
         <div id="resultText" class="fst-italic resultText" style="margin:auto 0;">
             <c:if test="${not empty total }">
@@ -77,8 +78,8 @@
 	      </span></div>
                     <div class="small">
                             ${movie.movieYear } |
-                        ${movie.movieDirector }</a>
-</div>
+                        ${movie.movieDirector }
+                        </a></div>
 </c:if>
 <!-- 포스터 이미지 준비중.png인 경우 -->
 <c:if test="${empty movie.moviePosterPath }"><br>

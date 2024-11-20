@@ -36,9 +36,8 @@ public class AdminMemberServiceImpl implements AdminMemberService{
 	}
 	//회원 삭제
 	@Override
-	public int deleteMember(String member_id) throws Exception {
-		int result = memberDAO.deleteMember(member_id);
-		return result;
+	public void deleteMember(String member_id) throws Exception {
+		memberDAO.deleteMember(member_id);
 	}
 	//회원 검색
 	@Override

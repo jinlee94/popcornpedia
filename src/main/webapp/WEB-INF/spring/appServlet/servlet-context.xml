@@ -30,6 +30,7 @@
 	</beans:bean>
 	
 	<!-- Intercepter -->
+	<beans:bean id="AdminCheckInterceptor" class="com.popcornpedia.common.interceptor.AdminCheckInterceptor" />
 	<beans:bean id="loginCheckInterceptor" class="com.popcornpedia.common.interceptor.LoginCheckInterceptor" />
 	<beans:bean id="boardAuthCheckInterceptor" class="com.popcornpedia.common.interceptor.BoardAuthCheckInterceptor" />
 	<beans:bean id="verifiedEmailCheckInterceptor" class="com.popcornpedia.common.interceptor.VerifiedEmailCheckInterceptor" />
@@ -49,7 +50,7 @@
 
 		<interceptor>
 			<mapping path="/admin/*"/>
-			<beans:ref bean="boardAuthCheckInterceptor" />
+			<beans:ref bean="AdminCheckInterceptor" />
 		</interceptor>
 	    
 	    <interceptor>

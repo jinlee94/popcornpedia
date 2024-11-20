@@ -23,31 +23,23 @@ public class AdminMemberController {
 	@Autowired
 	private AdminMemberService memberService;
 	
-	//관리자용 회원 추가 입력 Form으로 가기
-	@RequestMapping(value = "/admin/memberForm")
-	public ModelAndView goMemberForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return new ModelAndView("/admin/memberForm");
-	}
-
-	
-	//관리자용 멤버 추가하기
+	// 멤버 추가 (관리자용)
 	@RequestMapping(value="/admin/insertMember.do", method = RequestMethod.POST)
-	public ModelAndView insertMember(@ModelAttribute("memberInfo") MemberDTO memberDTO, HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView insertMember(@ModelAttribute("memberInfo") MemberDTO memberDTO, 
+			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		request.setCharacterEncoding("utf-8");
 		memberService.insertMember(memberDTO);
-		ModelAndView mav = new ModelAndView("redirect:/admin/listMember.do");
-		return mav;
+		return new ModelAndView("redirect:/admin/listMember");
 	}
-
 	
-	//전체 회원 조회하기
-	@RequestMapping(value = "/admin/listMember.do")
+	// 전체 회원 조회
+	@RequestMapping(value = "/admin/listMember")
 	public ModelAndView selectAllMember(@RequestParam(defaultValue = "1") int num) throws Exception {
-		int postNum = 15;
-		makePagingDTO page = new makePagingDTO(num, memberService.countMember(), postNum);
-		int total = memberService.countMember();
-
+		// 페이징 처리
+		int postNum = 15; // 한 페이지에 표시할 수
+		int total = memberService.countMember(); // 전체 멤버 수
+		makePagingDTO page = new makePagingDTO(num, total, postNum);
 		List memberlist = memberService.selectPageMember(page.getDisplayPost(), page.getPostNum());
 				
 		ModelAndView mav = new ModelAndView();
@@ -58,44 +50,30 @@ public class AdminMemberController {
 		mav.setViewName("admin/listMember");
 		return mav;
 	}
-
 	
-	//멤버 수정 페이지로 이동
-	@RequestMapping(value = "/admin/updateMemberForm.do")
-	public ModelAndView updateMemberForm(@RequestParam("member_id") String member_id, HttpServletRequest request, HttpServletResponse response) throws Exception{
-		MemberDTO memberDTO = memberService.selectOneMember(member_id);
-		ModelAndView mav = new ModelAndView();
-		request.setAttribute("memberDTO", memberDTO);
-		mav.setViewName("/admin/memberForm");
-		System.out.println("수정 페이지로 이동하기");
-		return mav;
-	}
-	
-	
-	//멤버 정보 수정하기 (관리자용)
+	// 멤버 정보 수정 (관리자용)
 	@RequestMapping(value = "/admin/updateMember.do")
-	public ModelAndView updateMember(@ModelAttribute("memberInfo") MemberDTO memberDTO, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ModelAndView updateMember(@ModelAttribute("memberInfo") MemberDTO memberDTO, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("utf-8");
 		memberService.updateMember(memberDTO);
-		ModelAndView mav = new ModelAndView("redirect:/admin/listMember.do");
-		return mav;
+		return new ModelAndView("redirect:/admin/listMember");
 	}
 
-
-	//멤버 삭제하기 (관리자용)
+	// 멤버 삭제 (관리자용)
 	@RequestMapping(value = "/admin/deleteMember.do")
-	public ModelAndView deleteMember(@RequestParam("member_id") String member_id,  HttpServletRequest request, HttpServletResponse response)
+	public ModelAndView deleteMember(@RequestParam("member_id") String member_id, 
+			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		int result = memberService.deleteMember(member_id);
-		ModelAndView mav = new ModelAndView("redirect:/admin/listMember.do");
-		return mav;
+		memberService.deleteMember(member_id);
+		return new ModelAndView("redirect:/admin/listMember");
 	}
-
 	
-	//멤버 검색하기 (관리자용)
+	// 멤버 검색 (관리자용)
 	@RequestMapping(value="/admin/searchMember.do")
-	public ModelAndView searchMember(@RequestParam("searchType") String searchType, @RequestParam("keyword") String keyword, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ModelAndView searchMember(@RequestParam("searchType") String searchType, 
+			@RequestParam("keyword") String keyword, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		request.setCharacterEncoding("utf-8");
 		//파라미터 DTO에 담기
 		MemberDTO searchDTO = new MemberDTO();
@@ -107,6 +85,24 @@ public class AdminMemberController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("membersList",memberlist);
 		mav.setViewName("admin/listMember");
+		return mav;
+	}
+	
+	// 회원 추가 페이지로 이동
+	@RequestMapping(value = "/admin/memberForm")
+	public ModelAndView goMemberForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return new ModelAndView("/admin/memberForm");
+	}
+	
+	// 멤버 수정 페이지로 이동
+	@RequestMapping(value = "/admin/updateMemberForm.do")
+	public ModelAndView goUpdateMemberForm(@RequestParam("member_id") String member_id, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception{
+		MemberDTO memberDTO = memberService.selectOneMember(member_id);
+		ModelAndView mav = new ModelAndView();
+		request.setAttribute("memberDTO", memberDTO);
+		mav.setViewName("/admin/memberForm");
+		System.out.println("수정 페이지로 이동하기");
 		return mav;
 	}
 
