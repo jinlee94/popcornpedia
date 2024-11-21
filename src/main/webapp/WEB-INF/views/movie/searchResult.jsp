@@ -124,7 +124,7 @@
             <c:forEach items="${result}" var="movie">
             <c:if test="${not empty movie.movieCd }">
             <div class="resultImg col mb-2">
-                <a href="${contextPath }/movie/movieInfoInsert.do?movieCd=${movie.movieCd}">
+                <a href="${contextPath }/movie/movieInfo?movieCd=${movie.movieCd}">
                     <img src="http://image.tmdb.org/t/p/w200${movie.moviePosterPath }" class="rounded">
                     <div>
                         <span class="mb-1 fw-bold">${movie.movieNm }</span><br>

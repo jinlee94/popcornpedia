@@ -52,7 +52,7 @@
   	</update>
 	
 	
-	<!-- 수정을 위해 dto 가져오기-->
+	<!-- dto 가져오기-->
 	<select id="selectOneMovie" resultMap="movieResult" parameterType="String">
       <![CDATA[
          select * 
@@ -60,12 +60,14 @@
          where movie_id=#{movie_id} 
       ]]>
 	</select>
-	
-	<!-- kobis 영화코드로 db 정보 가져오기 (나중에 삭제 각) -->
-	<select id="selectMovieByCd" parameterType="String" resultMap="movieResult" >
-		select * 
-		from movielist 
-		where movieCd=#{movieCd}
+
+	<!-- kobis 영화코드로 db 정보 가져오기 -->
+	<select id="selectOneMovieByCd" resultMap="movieResult" parameterType="String">
+		<![CDATA[
+         select *
+         from movielist
+         where movieCd=#{movieCd}
+      ]]>
 	</select>
 	
 	<!-- Kobis로 검색했을 때 기존 DB에 등록된 movie_id와 일치하는 영화가 있는지 확인(영화 제목, 연도로 찾기) -->

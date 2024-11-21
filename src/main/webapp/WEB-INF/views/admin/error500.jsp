@@ -16,7 +16,7 @@
 
 <div class="container text-center" style="margin:200px auto;">
 	<h4 class="mb-4">⛔</h4>
-	<h2 class="mb-5 fw-bold">잘못된 주소입니다.</h2>
+	<h2 class="mb-5 fw-bold">서버 오류. 잠시 후 다시 시도해주세요</h2>
 	<div class="col-3 mx-auto">
 		<a href="${contextPath}/movie/mainMovie" class="btn btn-primary d-block w-100 mb-2">메인 페이지로</a>
 	</div>

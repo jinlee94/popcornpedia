@@ -181,14 +181,10 @@ public class OpenAPIController {
         HashMap result = mapper.readValue(movieCdResponse, HashMap.class);
         JSONObject obj = new JSONObject(result);
         String movieCd = obj.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(0).getString("movieCd");
-        String movieName = obj.getJSONObject("movieListResult").getJSONArray("movieList").getJSONObject(0).getString("movieNm");
-        System.out.println("영화이름 : " + movieName + "----- 영화코드: " + movieCd);
-        System.out.println("영진위API 매핑 확인 제목 : " + movieNm + ",  감독 :" + directorNm);
-
         String movieInfo = service.getMovieInfo(true, movieCd);
-
         JSONObject obj2 = new JSONObject(movieInfo);
-        // 배우 정보
+
+        // 출연 배우
         StringBuilder actors = new StringBuilder(obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("actors").getJSONObject(0).getString("peopleNm"));
         for (int i = 1; i < obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("actors").length(); i++) {
             actors.append(", ").append(obj2.getJSONObject("movieInfoResult").getJSONObject("movieInfo").getJSONArray("actors").getJSONObject(i).getString("peopleNm"));

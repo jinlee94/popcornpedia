@@ -44,13 +44,15 @@ public class AdminMovieServiceImpl implements AdminMovieService{
 		MovieDTO movieDTO = movieDAO.selectOneMovie(movie_id);
 		return movieDTO;
 	}
-	
+
+	@Override
+	public MovieDTO selectOneMovieByCd(String movieCd) throws Exception {
+		return movieDAO.selectOneMovieByCd(movieCd);
+	}
+
 	public List adminSearchMovie(HashMap<String, Object> searchMap) throws Exception{
 		return movieDAO.adminSearchMovie(searchMap);
 	}
-
-
-
 
 	@Override
 	public List getMovieGenre(HashMap<String, Object> searchMap) throws Exception {

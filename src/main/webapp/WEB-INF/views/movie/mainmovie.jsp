@@ -46,7 +46,7 @@
                 </div>
                 <div class="rank-list col-7">
                     <c:forEach var="boxoffice" items="${dailyResult.boxOfficeResult.dailyBoxOfficeList}">
-                        <a class="d-block" href="${contextPath}/movie/movieInfoInsert.do?movieCd=${boxoffice.movieCd}">
+                        <a class="d-block" href="${contextPath}/movie/movieInfo?movieCd=${boxoffice.movieCd}">
                             <div class="rank-list-con row g-0 align-items-center py-3">
                                 <div class="col-1 ps-1 text-center fw-bold">${boxoffice.rank}</div>
                                 <div class="col-1 text-center">

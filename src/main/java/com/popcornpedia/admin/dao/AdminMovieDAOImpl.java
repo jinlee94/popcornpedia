@@ -63,10 +63,15 @@ public class AdminMovieDAOImpl implements AdminMovieDAO{
 	
 	@Override
 	public MovieDTO selectOneMovie(String movie_id) throws Exception {
-		MovieDTO 	movieDTO = sqlsession.selectOne("mapper.movie.selectOneMovie", movie_id);
+		MovieDTO movieDTO = sqlsession.selectOne("mapper.movie.selectOneMovie", movie_id);
 		return movieDTO;
 	}
-	
+
+	@Override
+	public MovieDTO selectOneMovieByCd(String movieCd) throws Exception {
+		return sqlsession.selectOne("mapper.movie.selectOneMovieByCd", movieCd);
+	}
+
 	@Override
 	public void deleteMovie(String movie_id) throws Exception {
 		int result = sqlsession.delete("mapper.movie.deleteMovie", movie_id);

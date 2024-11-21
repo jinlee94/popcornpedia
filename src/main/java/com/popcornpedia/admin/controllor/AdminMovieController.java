@@ -97,7 +97,7 @@ public class AdminMovieController {
 		return new ModelAndView("redirect:" + originalUrl);
 	}
 	
-	// 상세정보 페이지로 이동 (movie_id로 가기)
+	// 상세정보 페이지로 이동 (movie_id)
 	@RequestMapping(value = "/movie/movieInfoByID.do")
 	public ModelAndView goMovieInfoByID(@RequestParam("movie_id") String movie_id, 
 			HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
@@ -109,14 +109,16 @@ public class AdminMovieController {
 		return mav;
 	}
 	
-	// 상세정보 페이지로 이동(movieCd로 movie_id 정보 찾아오기)
-	@RequestMapping(value = "/movie/movieInfo.do")
-	public ModelAndView goMovieInfoByCD(@RequestParam("movieCd") String movieCd, 
+	// 상세정보 페이지로 이동(movieCd)
+	@RequestMapping(value = "/movie/movieInfo")
+	public ModelAndView goMovieInfoByCD(@RequestParam("movieCd") String movieCd,
 			HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
-		//System.out.println("컨트롤러 movieInfo 메서드 파라미터 movieCd : "+movieCd);
-		String movie_id = String.valueOf(movieService.getMovieID(movieCd)); //영진위 코드랑 DB에 매치되는 movie_id 가져오기
-		MovieDTO dto = movieService.selectOneMovie(movie_id);  //movie_id로 영화 정보 가져오기 
+		System.out.println("movieInfo 메서드 파라미터 movieCd : "+movieCd);
+		MovieDTO dto = movieService.selectOneMovieByCd(movieCd);
 		String posterPath="http://image.tmdb.org/t/p/w300"+dto.getMoviePosterPath();
+		if(posterPath.equals("")){
+			posterPath = "/popcornpedias/resources/images/movie/ready300.png";
+		}
 		dto.setMoviePosterPath(posterPath);
 		ModelAndView mav = new ModelAndView("/movie/movieInfo");
 		model.addAttribute("dto", dto); //모델에 담는거 테스트

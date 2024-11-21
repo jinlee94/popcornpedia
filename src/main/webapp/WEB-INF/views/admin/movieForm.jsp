@@ -11,7 +11,7 @@
     int movie_id;
     if (dto != null) {
         action = "/admin/updateMovie.do";
-        readonly = "readonly style='background-color:#dfdfdf;'";
+        readonly = "readonly";
         movie_id = dto.getMovie_id();
         showTm = dto.getShowTm();
     } else {
@@ -136,7 +136,7 @@
                 </tr>
                 <tr>
                     <th>영화 줄거리(자동입력)</th>
-                    <td><input type="text" size="80" id="overview" readonly style="background-color:#eee;"
+                    <td><input type="text" size="80" id="overview" "
                                placeholder="줄거리" name="movieOverview" value="${movieDTO.movieOverview }"></td>
                 </tr>
             </table>
@@ -179,6 +179,15 @@
     function fn_getKobisAPI() {
         var _name = $("#movieNm").val();
         var _dire = $("#directorNm").val();
+        if(_name === ""){
+            alert('영화명(국문)을 입력해주세요')
+            return;
+        }
+        if(_dire === ""){
+            alert('감독명을 입력해주세요')
+            return;
+        }
+
         $.ajax({
             type: "post",
             async: false,

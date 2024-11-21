@@ -14,6 +14,7 @@ public interface AdminMovieService {
 	public List selectAllMovie() throws Exception;
 	public void updateMovie(MovieDTO movieDTO) throws Exception;
 	public MovieDTO selectOneMovie(String movie_id) throws Exception;
+	public MovieDTO selectOneMovieByCd(String movieCd) throws Exception;
 	public List adminSearchMovie(HashMap<String, Object> searchMap) throws Exception;
 	public List getMovieGenre(HashMap<String, Object> searchMap) throws Exception;
 	public void deleteMovie(String movie_id) throws Exception;

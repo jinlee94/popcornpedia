@@ -21,13 +21,6 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
 		String user_id = userDTO.getMember_id(); // 접속중인 사용자 id
 		if(user_id.equals("admin")) {
 			return true;
-		} else if(user_id.equals(null)) {
-			System.out.println("[AdminInterceptor] 로그인 상태 아님");
-			response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>alert('잘못된 요청입니다.'); location.href='/user/login';</script>");
-            out.flush();
-			return false;
 		}
 		else {
 			System.out.println("[AdminInterceptor] 관리자 아이디 아님");
