@@ -26,7 +26,7 @@
 <%@ include file="../common/nav.jsp" %>
 <div class="searchWrap">
     <h3 class="fw-bold text-center mb-4 mt-5">Kobis 영화 검색</h3>
-    <form method="get" action="${contextPath}/movie/searchResultKobis.do" class="row gx-2 justify-content-center">
+    <form method="get" action="${contextPath}/admin/searchResultKobis.do" class="row gx-2 justify-content-center">
         <div class="col-6">
             <input type="text" size="30" name="keyword" placeholder="영화 제목" class="form-control form-control-lg">
         </div>
@@ -41,7 +41,7 @@
         <c:when test="${result.movieListResult.totCnt==0}">
             <div class="noResultBox">
                 <div class="noResult alert alert-secondary">
-                    검색 결과가 없습니다.
+                    	검색 결과가 없습니다.
                 </div>
             </div>
             <br>
@@ -49,13 +49,16 @@
         <c:otherwise>
             <div class="container text-center ">
                 <div class="row row-cols-5" id="container" style="min-height:60vh;">
-                    <c:if test="${not empty result.movieListResult.movieList}">
-                        <c:forEach items="${result.movieListResult.movieList}" var="movie">
+                    <c:if test="${not empty movieList}">
+                        <c:forEach items="${movieList}" var="movie">
                             <c:if test="${not empty movie.openDt and not empty movie.directors}">
 
                                 <div class="resultImg col ">
                                     <a href="${contextPath }/movie/movieInfoInsert.do?movieCd=${movie.movieCd}">
-                                        <img src="${movie.posterPath }" class="rounded">
+                                    	<c:if test="${not empty movie.moviePosterPath }">
+                                        <img src="http://image.tmdb.org/t/p/w200${movie.moviePosterPath }" class="rounded"></c:if>
+                                        <c:if test="${empty movie.moviePosterPath }">
+                                        <img src="${contextPath }/resources/images/movie/ready300.png" class="rounded"></c:if>
                                         <div><span class="mb-1 fw-bold">${movie.movieNm }</span></div>
                                         <c:if test="${ not empty movie.movieYear }">${movie.movieYear } | </c:if>
                                         <c:forEach items="${movie.directors}" var="director">${director.peopleNm}</c:forEach>

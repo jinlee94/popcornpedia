@@ -109,7 +109,7 @@
 <!-- 페이징을 위한 변수 set -->
 <c:choose>
     <c:when test="${not empty searchMap}">
-        <c:set var="pageUrl" value="${contextPath}/admin/search.do?num="/>
+        <c:set var="pageUrl" value="${contextPath}/admin/searchMovie.do?num="/>
         <c:set var="pageQuery" value="&searchType=${searchMap.searchType}&keyword=${searchMap.keyword}"/>
     </c:when>
     <c:otherwise>

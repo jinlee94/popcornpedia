@@ -76,20 +76,20 @@
                 </tr>
                 <tr>
                     <th>movie_id</th>
-                    <td><input type="text" name="movie_id" value="<%=movie_id %>" placeholder="작성금지" <%=readonly %>>
+                    <td><input type="text" name="movie_id" value="<%=movie_id %>" placeholder="작성금지" readonly style="background-color:#eee;">
                     </td>
                 </tr>
                 <tr>
                     <th>개봉연도</th>
-                    <td><input type="text" placeholder="숫자만 입력" name="movieYear" value="${movieDTO.movieYear }"></td>
+                    <td><input type="text" placeholder="숫자만 입력" name="movieYear" id="movieYear" value="${movieDTO.movieYear }"></td>
                 </tr>
                 <tr>
                     <th>제작국가</th>
-                    <td><input type="text" name="movieNation" value="${movieDTO.movieNation }"></td>
+                    <td><input type="text" name="movieNation" id="movieNation" value="${movieDTO.movieNation }"></td>
                 </tr>
                 <tr>
                     <th>장르</th>
-                    <td><input type="text" name="movieGenre" value="${movieDTO.movieGenre }"></td>
+                    <td><input type="text" name="movieGenre" id="movieGenre" value="${movieDTO.movieGenre }"></td>
                 </tr>
 
                 <tr>
@@ -201,6 +201,9 @@
                 $("#grade").val(jsonInfo.grade);
                 $("#movieCd").val(jsonInfo.movieCd2);
                 $("#movieNmEn").val(jsonInfo.movieNmEn);
+                $("#movieGenre").val(jsonInfo.movieGenres);
+                $("#movieYear").val(jsonInfo.movieYear);
+                $("#movieNation").val(jsonInfo.movieNation);
             },
             error: function (data, textStatus) {
                 alert('에러')

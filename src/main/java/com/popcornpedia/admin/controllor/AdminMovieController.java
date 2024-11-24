@@ -111,9 +111,9 @@ public class AdminMovieController {
 	
 	// 상세정보 페이지로 이동(movieCd)
 	@RequestMapping(value = "/movie/movieInfo")
-	public ModelAndView goMovieInfoByCD(@RequestParam("movieCd") String movieCd,
+	public ModelAndView goMovieInfoByCd(@RequestParam("movieCd") String movieCd,
 			HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
-		System.out.println("movieInfo 메서드 파라미터 movieCd : "+movieCd);
+		System.out.println("상세 페이지goMovieInfoByCd() movieCd : "+movieCd);
 		MovieDTO dto = movieService.selectOneMovieByCd(movieCd);
 		String posterPath="http://image.tmdb.org/t/p/w300"+dto.getMoviePosterPath();
 		if(posterPath.equals("")){

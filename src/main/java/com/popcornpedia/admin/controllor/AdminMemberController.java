@@ -38,7 +38,7 @@ public class AdminMemberController {
 	public ModelAndView selectAllMember(@RequestParam(defaultValue = "1") int num) throws Exception {
 		// 페이징 처리
 		int postNum = 15; // 한 페이지에 표시할 수
-		int total = memberService.countMember(); // 전체 멤버 수
+		int total = memberService.countMember()-1; // 전체 멤버 수
 		makePagingDTO page = new makePagingDTO(num, total, postNum);
 		List memberlist = memberService.selectPageMember(page.getDisplayPost(), page.getPostNum());
 				

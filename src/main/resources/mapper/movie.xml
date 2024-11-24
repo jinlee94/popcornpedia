@@ -30,7 +30,7 @@
       <![CDATA[
          select * 
          from movielist
-         order by moviePosterPath, movieCd desc
+         order by moviePosterPath, movie_id desc
          limit 10
       ]]>
 	</select>

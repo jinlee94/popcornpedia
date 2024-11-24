@@ -53,6 +53,7 @@
             <td class="border"><b>관리</b></td>
         </tr>
         <c:forEach var="member" items="${membersList}">
+        <c:if test="${member.member_id ne 'admin'}">
             <tr align="center">
                 <td class="border">${member.member_id}</td>
                 <td class="border">${member.nickname}</td>
@@ -64,7 +65,7 @@
                 </td>
                 <td class="border">
                     <c:if test="${not empty member.memberImgName }"><img
-                            src="/popcornpedias/resources/images/member/${member.memberImgName}" width="30px"></c:if>
+                            src="/popcornpedias/resources/images/member/${member.member_id }/${member.memberImgName}" width="30px"></c:if>
                     <c:if test="${empty member.memberImgName }"><img
                             src="/popcornpedias/resources/images/common/default-profile.png" width="30px"></c:if>
                 </td>
@@ -78,6 +79,7 @@
                        onclick="confirmDelete(event)">삭제</a>
                 </td>
             </tr>
+            </c:if>
         </c:forEach>
     </table>
 
