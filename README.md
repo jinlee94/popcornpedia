@@ -8,4 +8,4 @@
 3. 영화 리뷰
 
 ▼ 팝콘피디아 영화 관리<br>
-https://drive.google.com/file/d/1OA88nXBI2Y9CKSBIrce7GkX98weRqbHu/view?usp=drive_link
+https://drive.google.com/file/d/1OA88nXBI2Y9CKSBIrce7GkX98weRqbHu/view
