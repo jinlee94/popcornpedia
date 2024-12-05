@@ -7,7 +7,6 @@
 2. 영화 별점 & 리뷰
 3. 영화 취향분석
 <br />
-<hr/>
 <br />
 
 ## 🎯 담당 기능
@@ -19,7 +18,7 @@
 사용 API : Kobis, TMDB(themoviedbapi)
 <br>
 <br>
-<hr/>
+
 
 ## 🛠 기술 스택
 | **Category**         | **Technology**                             |
