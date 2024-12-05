@@ -37,5 +37,8 @@
 
 <hr/>
 
-▼ 팝콘피디아 영화관리 구현.mp4<br>
+# ▼ 팝콘피디아 영화관리 구현.mp4<br>
 https://drive.google.com/file/d/1OA88nXBI2Y9CKSBIrce7GkX98weRqbHu/view
+
+<br>
+<br>
