@@ -42,7 +42,7 @@ public class OpenAPIController {
 	 * movieCd : 영진위 코드 movie_id : 팝콘피디아 DB 추가 순서
 	 */
 
-	String key = "aacda2bad5836d6156ba855b1db4461a"; // Kobis(영진위) 발급키 (git에 올릴 때 삭제)
+	String key = "Kobis발급키";
 	KobisOpenAPIRestService service = new KobisOpenAPIRestService(key);
 
 	@Autowired
@@ -305,7 +305,7 @@ public class OpenAPIController {
 									+ "&include_adult=true&language=ko-kr&page=1&year=" + movieYear)
 							.get().addHeader("accept", "application/json")
 							.addHeader("Authorization",
-									"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiY2E3YzVhYWUyM2NhMmEwODMwNDBmM2YxNzRmMTdhMiIsInN1YiI6IjY0ZWU5MDIxZTBjYTdmMDEwZGUyZDg2MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zpKwr_Vqp_h8YepA8M1_F53PTXjCU0EIipT3dsjk0Tk")
+									"Bearer key")
 							.build();
 
 					Response respons = client.newCall(reques).execute();
@@ -333,7 +333,8 @@ public class OpenAPIController {
 		return new ModelAndView("/admin/kobisResultMovie");
 	}
 
-	// Kobis검색 결과에서 상세페이지 열면 영진위 정보 + TMDB 정보 가져와서 DB에 추가(수정)하기
+	// Kobis검색 결과 - 상세페이지 
+	// 영진위 정보 + TMDB 정보 가져와서 DB에 추가(수정)하기
 	@RequestMapping(value = "/movie/movieInfoInsert.do")
 	public ModelAndView getMovieInfoAndInsertKobis(@RequestParam("movieCd") String movieCd, Model model) throws Exception {
 
@@ -427,7 +428,7 @@ public class OpenAPIController {
 							+ "&include_adult=true&language=ko-kr&page=1&year=" + movieYear)
 					.get().addHeader("accept", "application/json")
 					.addHeader("Authorization",
-							"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiY2E3YzVhYWUyM2NhMmEwODMwNDBmM2YxNzRmMTdhMiIsInN1YiI6IjY0ZWU5MDIxZTBjYTdmMDEwZGUyZDg2MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zpKwr_Vqp_h8YepA8M1_F53PTXjCU0EIipT3dsjk0Tk")
+							"Bearer key")
 					.build();
 
 			Response respons = client.newCall(reques).execute();
@@ -437,7 +438,8 @@ public class OpenAPIController {
 			int total_results = json.getInt("total_results");
 			System.out.println("tmdb json 결과 : " + total_results);
 
-			if (total_results != 0) { // TMDB에 결과가 있는 경우 이미지 URL + 줄거리 받아오기
+			if (total_results > 0) { // TMDB에 결과가 있는 경우 이미지 URL + 줄거리 받아오기
+				// 배경 이미지
 				String backdropPath = "";
 				try {
 					if (json.getJSONArray("results").getJSONObject(0).isNull("backdrop_path")) {
@@ -447,10 +449,11 @@ public class OpenAPIController {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				// 줄거리
 				String overView = json.getJSONArray("results").getJSONObject(0).getString("overview");
+				// 포스터 이미지
 				posterPath = json.getJSONArray("results").getJSONObject(0).getString("poster_path");
-				if (posterPath == null || posterPath.equals("")) // 그래도 혹시나 포스터 URL을 못 가져오는 경우
-				{
+				if (posterPath == null || posterPath.equals("")) {
 					posterPath = "/popcornpedias/resources/images/movie/ready300.png";
 					dto.setMoviePosterPath(posterPath);
 				} else {
@@ -459,8 +462,7 @@ public class OpenAPIController {
 							overView, movieCd);
 					movieService.insertMovie(dto); // dto는 dao의 insertMovie 메서드로 보내서 가져온 데이터 DB에 추가하기
 					posterPath = "http://image.tmdb.org/t/p/w300"
-							+ json.getJSONArray("results").getJSONObject(0).getString("poster_path"); // 뷰페이지로 보낼때는 이미지용
-																										// 주소 추가
+							+ json.getJSONArray("results").getJSONObject(0).getString("poster_path"); // 뷰페이지로 보낼때는 이미지용 주소 추가
 					dto.setMoviePosterPath(posterPath);
 					model.addAttribute("dto", dto); // 이미지까지 전부 모델 속성에 dto 담기
 				}
