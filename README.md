@@ -7,7 +7,7 @@
 - 보고싶은영화 & 영화 취향분석
 - 자유게시판
 <br>
-사용한 외부 API : Kobis, TMDB(themoviedbapi)
+사용한 외부 API : 영화진흥위원회 Kobis, TMDB(themoviedbapi)
 <br>
 
 <br />
