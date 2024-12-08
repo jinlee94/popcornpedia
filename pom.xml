@@ -195,7 +195,6 @@
             <version>1.1.0</version>
         </dependency>
 
-        <!-- sqlSessionFactory 만들때 없으면 에러남 -->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
@@ -269,7 +268,7 @@
             <version>3.3.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp 2023-08-30 추가 Square 에서 만든 간편하게 REST API나 http기반의 요청 응답을 처리할 수 있는 라이브러리 -->
+        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp 2023-08-30 추가. Square 에서 만든 간편하게 REST API나 http기반의 요청 응답을 처리할 수 있는 라이브러리 -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
