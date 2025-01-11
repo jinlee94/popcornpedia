@@ -4,29 +4,32 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="mapper.member">
-	<resultMap id="memResult" type="memberDTO">
+	<resultMap id="memResult" type="memberDTO">		
 		<result property="member_id" column="member_id" />
-        <result property="pwd" column="pwd" />
-        <result property="email" column="email" />
-        <result property="nickname" column="nickname" />
-        <result property="joinDate" column="joinDate" />
-        <result property="gender" column="gender" />
-        <result property="memberImgName" column="memberImgName" />
-        <result property="email_verified" column="email_verified" />
+	        <result property="pwd" column="pwd" />
+	        <result property="email" column="email" />
+	        <result property="nickname" column="nickname" />
+	        <result property="joinDate" column="joinDate" />
+	        <result property="gender" column="gender" />
+	        <result property="memberImgName" column="memberImgName" />
+	        <result property="email_verified" column="email_verified" />
 	</resultMap> 
 	
 	<!-- 전체 회원 가져오기 -->
 	<select id="selectAllMemberList" resultMap="memResult">
-      <![CDATA[
-         select * 
-         from popcornmember 
-         order by joinDate desc	 	
-      ]]>
+	      <![CDATA[
+		 select * 
+		 from popcornmember 
+		 order by joinDate desc	 	
+	      ]]>
 	</select>
 	
 	<!-- 회원 가입하기 -->
 	<insert id="insertMember" parameterType="memberDTO">
-		<![CDATA[insert into popcornmember(member_id, pwd, email, nickname, gender) values(#{member_id}, #{pwd}, #{email}, #{nickname}, #{gender})]]>
+		<![CDATA[
+		insert into popcornmember(member_id, pwd, email, nickname, gender) 
+		values(#{member_id}, #{pwd}, #{email}, #{nickname}, #{gender})
+		]]>
 	</insert>
 	
 	<!-- 입력한 아이디가 존재하는지 확인 (0 또는 1 반환) -->
@@ -76,11 +79,11 @@
 	
 	<!-- 아이디로 멤버 찾기 -->
 	<select id="selectOneMember" resultType="memberDTO" parameterType="String">
-      <![CDATA[
-         select * 
-         from popcornmember 
-         where member_id=#{member_id}
-      ]]>
+	      <![CDATA[
+	         select * 
+	         from popcornmember 
+	         where member_id=#{member_id}
+	      ]]>
 	</select>
     
 	<!-- 멤버 삭제 -->
