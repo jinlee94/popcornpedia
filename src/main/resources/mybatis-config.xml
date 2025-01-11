@@ -7,10 +7,10 @@
 		<typeAlias type="com.popcornpedia.member.dto.MemberDTO"  alias="memberDTO" />
 		<typeAlias type="com.popcornpedia.movie.dto.MovieDTO"  alias="movieDTO" />
 		<typeAlias type="com.popcornpedia.board.dto.BoardDTO" alias="boardDTO" />
-        <typeAlias type="com.popcornpedia.board.dto.CommentDTO" alias="commentDTO" />
-        <typeAlias type="com.popcornpedia.member.dto.MemberDTO" alias="memberDTO" />
+        	<typeAlias type="com.popcornpedia.board.dto.CommentDTO" alias="commentDTO" />
+        	<typeAlias type="com.popcornpedia.member.dto.MemberDTO" alias="memberDTO" />
 		<typeAlias type="com.popcornpedia.movie.dto.ReviewDTO"  alias="ReviewDTO" />
-        <typeAlias type="com.popcornpedia.movie.dto.StarRatingDTO"  alias="StarRatingDTO" />
+        	<typeAlias type="com.popcornpedia.movie.dto.StarRatingDTO"  alias="StarRatingDTO" />
 	</typeAliases>
 	
 </configuration>
